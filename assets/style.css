@@ -1,0 +1,293 @@
+/* =========================================================
+   CSS RESET + BASE
+========================================================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+                 "Open Sans", "Helvetica Neue", sans-serif;
+
+    background: var(--bg);
+    color: var(--text);
+    transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* =========================================================
+   THEME VARIABLES
+========================================================= */
+:root {
+    /* Core */
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted-text: #64748b;
+    --border: #cbd5e1;
+
+    /* Sidebar */
+    --sidebar-bg: #020617;
+    --sidebar-text: #e5e7eb;
+    --sidebar-hover: #1e293b;
+    --sidebar-active: #2563eb;
+
+    /* Tables */
+    --table-bg: #ffffff;
+    --table-header-bg: #2563eb;
+    --table-header-text: #ffffff;
+    --row-odd: #f1f5f9;
+    --row-even: #e5e7eb;
+    --row-hover: #c7d2fe;
+
+    /* Buttons */
+    --primary: #2563eb;
+    --primary-hover: #1e40af;
+    --secondary: #64748b;
+    --secondary-hover: #475569;
+    --success: #16a34a;
+    --success-hover: #15803d;
+    --danger: #dc2626;
+    --danger-hover: #b91c1c;
+
+    /* Inputs */
+    --input-bg: #f8fafc;
+    --input-text: #0f172a;
+    --input-border: #cbd5e1;
+    --input-focus: #2563eb;
+}
+
+/* ================= DARK MODE ================= */
+body.dark {
+    --bg: #0f172a;
+    --card: #020617;
+    --text: #e5e7eb;
+    --muted-text: #94a3b8;
+    --border: #334155;
+
+    --sidebar-bg: #020617;
+    --sidebar-text: #e5e7eb;
+    --sidebar-hover: #1e293b;
+    --sidebar-active: #3b82f6;
+
+    --table-bg: #020617;
+    --table-header-bg: #3b82f6;
+    --table-header-text: #ffffff;
+    --row-odd: #020617;
+    --row-even: #020617;
+    --row-hover: #1e293b;
+
+    --input-bg: #020617;
+    --input-text: #e5e7eb;
+    --input-border: #334155;
+    --input-focus: #3b82f6;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 180px;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.35s ease;
+}
+
+.sidebar h2 {
+    color: var(--sidebar-text);
+    padding: 16px;
+    margin: 0;
+    font-size: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar a {
+    margin: 4px 8px;
+    padding: 12px 16px;
+    border-radius: 8px;
+
+    color: var(--sidebar-text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: all 0.25s ease;
+}
+
+.sidebar a:hover {
+    background: var(--sidebar-hover);
+    transform: translateX(4px);
+}
+
+.sidebar a.active {
+    background: var(--sidebar-active);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+.content {
+    margin-left: 200px;
+    padding: 5%;
+    transition: background-color 0.35s ease;
+}
+
+/* =========================================================
+   TABLES
+========================================================= */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    background: var(--table-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+table th {
+    background: var(--table-header-bg);
+    color: var(--table-header-text);
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 600;
+}
+
+table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+table tbody tr:nth-child(odd) {
+    background: var(--row-odd);
+}
+
+table tbody tr:nth-child(even) {
+    background: var(--row-even);
+}
+
+table tbody tr:hover {
+    background: var(--row-hover);
+    transition: background-color 0.2s ease;
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+button,
+.btn {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+/* Primary */
+.btn-primary,
+button[type="submit"] {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(37,99,235,0.35);
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* Secondary */
+.btn-secondary {
+    background: var(--secondary);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-hover);
+}
+
+/* Success */
+.btn-success {
+    background: var(--success);
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: var(--success-hover);
+}
+
+/* Danger */
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: var(--danger-hover);
+}
+
+/* Disabled */
+button:disabled {
+    background: var(--border);
+    color: var(--muted-text);
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   INPUTS / SEARCH
+========================================================= */
+input,
+select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--input-text);
+    font-size: 14px;
+
+    transition: all 0.25s ease;
+}
+
+input::placeholder {
+    color: var(--muted-text);
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
+}
+
+/* Search input helper */
+.search-input {
+    width: 280px;
+}
+
+/* =========================================================
+   BUTTON GROUPS
+========================================================= */
+.button-group {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+}
