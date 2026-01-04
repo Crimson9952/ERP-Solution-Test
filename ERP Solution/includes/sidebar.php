@@ -17,6 +17,5 @@ $current = basename($_SERVER['PHP_SELF']);
     <a href="/erp/ERP Solution/inventory/index.php">Inventory</a>
     <a href="/erp/ERP Solution/reports/monthly.php">Reports</a>
     <a href="/erp/ERP Solution/suppliers/index.php">Suppliers</a>
-    <a href="/erp/ERP Solution/bom/index.php">Bill Of Materials</a>
 </div>
 
