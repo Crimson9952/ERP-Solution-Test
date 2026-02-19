@@ -133,26 +133,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 
     if ($_POST['action'] === 'add_interaction') {
-        $stmt = $pdo->prepare("
-            INSERT INTO crm_lead_interactions
-            (lead_id, interaction_type, interaction_date, subject, description, outcome, next_action, next_action_date, handled_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->execute([
-            $id,
-            $_POST['interaction_type'],
-            $_POST['interaction_date'],
-            $_POST['subject'] ?: null,
-            $_POST['int_description'] ?: null,
-            $_POST['outcome'] ?: null,
-            $_POST['next_action'] ?: null,
-            $_POST['next_action_date'] ?: null,
-            $_POST['handled_by'] ?: null
-        ]);
+        // Check if created_by_user_id column exists
+        $hasCreatedBy = false;
+        try {
+            $colCheck = $pdo->query("SHOW COLUMNS FROM crm_lead_interactions LIKE 'created_by_user_id'");
+            $hasCreatedBy = $colCheck->rowCount() > 0;
+        } catch (PDOException $e) {}
+
+        if ($hasCreatedBy) {
+            $stmt = $pdo->prepare("
+                INSERT INTO crm_lead_interactions
+                (lead_id, interaction_type, interaction_date, subject, description, outcome, next_action, next_action_date, handled_by, created_by_user_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $id,
+                $_POST['interaction_type'],
+                $_POST['interaction_date'],
+                $_POST['subject'] ?: null,
+                $_POST['int_description'] ?: null,
+                $_POST['outcome'] ?: null,
+                $_POST['next_action'] ?: null,
+                $_POST['next_action_date'] ?: null,
+                $_POST['handled_by'] ?: null,
+                $currentUserId
+            ]);
+        } else {
+            $stmt = $pdo->prepare("
+                INSERT INTO crm_lead_interactions
+                (lead_id, interaction_type, interaction_date, subject, description, outcome, next_action, next_action_date, handled_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $id,
+                $_POST['interaction_type'],
+                $_POST['interaction_date'],
+                $_POST['subject'] ?: null,
+                $_POST['int_description'] ?: null,
+                $_POST['outcome'] ?: null,
+                $_POST['next_action'] ?: null,
+                $_POST['next_action_date'] ?: null,
+                $_POST['handled_by'] ?: null
+            ]);
+        }
 
         // Update last contact date
         $pdo->prepare("UPDATE crm_leads SET last_contact_date = ? WHERE id = ?")
             ->execute([date('Y-m-d', strtotime($_POST['interaction_date'])), $id]);
+
+        // Auto-set next followup date based on lead status if not explicitly provided
+        if (!empty($_POST['next_action_date'])) {
+            $pdo->prepare("UPDATE crm_leads SET next_followup_date = ? WHERE id = ?")
+                ->execute([$_POST['next_action_date'], $id]);
+        } else {
+            // Auto-calculate next followup: Hot=1 day, Warm=3 days, Cold=5 days
+            $interactionDate = date('Y-m-d', strtotime($_POST['interaction_date']));
+            $leadStatus = strtolower($lead['lead_status']);
+            $daysMap = ['hot' => 1, 'warm' => 3, 'cold' => 5];
+            if (isset($daysMap[$leadStatus])) {
+                $nextDate = date('Y-m-d', strtotime($interactionDate . ' + ' . $daysMap[$leadStatus] . ' days'));
+                $pdo->prepare("UPDATE crm_leads SET next_followup_date = ? WHERE id = ?")
+                    ->execute([$nextDate, $id]);
+            }
+        }
 
         setModal("Success", "Interaction logged");
         header("Location: view.php?id=$id#interactions");
